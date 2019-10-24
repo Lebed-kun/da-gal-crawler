@@ -5,7 +5,8 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "NODE_ENV=production node backend/server.js",
-    "dev": "webpack-dev-server --mode development --open --hot && node backend/server.js",
+    "backend" : "node backend/server.js", 
+    "frontend": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production"
   },
   "author": "",
