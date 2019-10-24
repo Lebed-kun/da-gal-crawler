@@ -2,9 +2,10 @@
   "name": "da-gallery-crawler",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open --hot",
+    "start" : "node backend/server.js",
+    "dev": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production"
   },
   "author": "",
