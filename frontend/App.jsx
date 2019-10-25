@@ -6,9 +6,18 @@ import { BASE_URL, VALID_URL_REGEX } from './constants.js';
 class App extends React.Component {
     state = {
         loading : false,
-        error : false,
+        error : '',
         data : null,
-        link : ''
+        link : '',
+        limit : 100
+    }
+
+    validateLink = value => {
+        return !!value.match(VALID_URL_REGEX);
+    }
+
+    validateLimit = value => {
+        return value > 0 && value <= 1000;
     }
 
     handleChange = e => {
@@ -23,28 +32,39 @@ class App extends React.Component {
         e.preventDefault();
 
         const link = this.state.link;
-        if (!link.match(VALID_URL_REGEX)) {
+        if (!this.validateLink(link)) {
             this.setState({
-                error : true
+                error : 'Invalid link format!'
             });
-            return
+            return;
+        }
+
+        const limit = +this.state.limit;
+        if (!this.validateLimit(limit)) {
+            this.setState({
+                error : 'Invalid limit format!'
+            })
         }
 
         this.setState({
             loading : true
         });
 
-        axios.post(`${BASE_URL}/upload`, {
-                link : this.state.link
+        axios.post(`${BASE_URL}/download`, {
+                link : link,
+                limit : limit
             })
             .then(res => {
-
+                console.log(res);
+                this.setState({
+                    loading : false
+                })
             })
             .catch(err => {
                 console.log(err);
                 this.setState({
                     loading : false,
-                    error : true
+                    error : err.message
                 })
             })
     }
@@ -52,9 +72,10 @@ class App extends React.Component {
     reset = () => {
         this.setState({
             loading : false,
-            error : false,
+            error : '',
             data : null,
-            link : ''
+            link : '',
+            limit : 100
         })
     }
 
@@ -65,7 +86,7 @@ class App extends React.Component {
         } else if (this.state.error) {
             content = (
                 <div>
-                    <h1 className="error">Error in retrieving images :( </h1>
+                    <h1 className="error">Error: "{this.state.error}" :( </h1>
 
                     <button onClick={this.reset}>
                         Try again
@@ -77,7 +98,9 @@ class App extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <h1>Put url of DA gallery here to get images</h1>
                     
-                    <input name="link" onChange={this.handleChange} />
+                    <input key="link" name="link" onChange={this.handleChange} placeholder="Link to the gallery/collection" />
+                    <input key="limit" name="limit" value={this.state.limit} onChange={this.handleChange} placeholder="Count"/>
+                    
                     <button type="submit">
                         Go!
                     </button>
