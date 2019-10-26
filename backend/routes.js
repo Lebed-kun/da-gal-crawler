@@ -93,7 +93,58 @@ router.post('/api/download', (request, response, next) => {
         console.log(err);
         response.status(500).send();
     })
+})
 
+// Fetch urls of images
+router.post('/api/download', (request, response, next) => {
+    const accessToken = request.body.accessToken;
+    const method = request.body.link.type;
+    const folderId = request.body.folderId;
+    const username = request.body.link.username; 
+    const limit = request.body.limit;
+
+    const links = [];
+
+    let getImgUrlsPromise = function f(options) {
+        let { baseUrl, method, accessToken, folderId, username, offset, limit, links } = options;
+        offset = offset || 0;
+
+        let promise = axios.get(`${baseUrl}/${method}/${folderId}?access_token=${accessToken}&username=${username}&offset=${offset}`);
+        promise = promise.then(res => {
+            const results = res.data.results;
+            const nextOffset = res.data.next_offset;
+
+            for (let i = 0; i < results.length && i < limit; i++) {
+                links.push(results[i].content.src);
+            }
+
+            if (res.data.next_offset && links.length < limit) {
+                options.offset = res.data.next_offset;
+                                    
+                return f(options);
+            } else {
+                return links;
+            }
+        })
+
+        return promise;
+    }
+
+    getImgUrlsPromise({
+        baseUrl : config.BASE_API_URL,
+        method : method,
+        accessToken : accessToken,
+        folderId : folderId,
+        username : username,
+        limit : limit,
+        links : links
+    }).then(links => {
+        request.body.imgUrls = links;
+        next();
+    }).catch(err => {
+        console.log(err);
+        response.status(500).send();
+    })
 })
 
 router.post('/api/download', (request, response) => {
