@@ -17,7 +17,7 @@ class App extends React.Component {
     }
 
     validateLimit = value => {
-        return value > 0 && value <= 1000;
+        return value > 0 && value <= 500;
     }
 
     handleChange = e => {
@@ -42,7 +42,7 @@ class App extends React.Component {
         const limit = +this.state.limit;
         if (!this.validateLimit(limit)) {
             this.setState({
-                error : 'Invalid limit format!'
+                error : 'Limit should be greater than 0 and at most 500!'
             })
         }
 
