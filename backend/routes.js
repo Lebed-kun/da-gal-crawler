@@ -147,6 +147,11 @@ router.post('/api/download', (request, response, next) => {
     })
 })
 
+// Download images from urls
+router.post('/api/download', (request, response, next) => {
+    
+}) 
+
 router.post('/api/download', (request, response) => {
     response.send(request.body);
 })
