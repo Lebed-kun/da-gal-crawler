@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const JSZip = require('jszip');
 
 const config = require('./config.js');
 const utils = require('./utils.js');
@@ -149,7 +150,18 @@ router.post('/api/download', (request, response, next) => {
 
 // Download images from urls
 router.post('/api/download', (request, response, next) => {
-    
+    const imgUrls = request.body.links;
+    const zip = new JSZip();
+
+    const getImagePromise = function f(options) {
+        let { urls, id } = options;
+        id = id || 0;
+
+        let promise = axios.get(urls[id], {
+            responseType : 'arraybuffer'
+        });
+        promise = promise.then(res => Buffer.from(res.data, 'base64'));
+    }
 }) 
 
 router.post('/api/download', (request, response) => {
