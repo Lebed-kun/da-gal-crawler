@@ -55,11 +55,12 @@ class App extends React.Component {
                 limit : limit
             })
             .then(res => {
-                console.log(res);
                 this.setState({
-                    loading : false,
-                    data : res.data
-                })
+                    loading : false
+                });
+                console.log(res);
+                const downloadUri = `data:application/zip;charset=utf-8;base64,${res.data}`;
+                window.location.href = downloadUri;
             })
             .catch(err => {
                 console.log(err);

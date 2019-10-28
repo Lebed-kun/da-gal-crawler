@@ -119,8 +119,8 @@ router.post('/api/download', (request, response, next) => {
                 links.push(results[i].content.src);
             }
 
-            if (res.data.next_offset && links.length < limit) {
-                options.offset = res.data.next_offset;
+            if (nextOffset && links.length < limit) {
+                options.offset = nextOffset;
                                     
                 return f(options);
             } else {
@@ -150,22 +150,55 @@ router.post('/api/download', (request, response, next) => {
 
 // Download images from urls
 router.post('/api/download', (request, response, next) => {
-    const imgUrls = request.body.links;
+    const imgUrls = request.body.imgUrls;
     const zip = new JSZip();
 
     const getImagePromise = function f(options) {
-        let { urls, id } = options;
+        let { urls, id, zip } = options;
         id = id || 0;
 
         let promise = axios.get(urls[id], {
             responseType : 'arraybuffer'
         });
         promise = promise.then(res => Buffer.from(res.data, 'base64'));
+        promise = promise.then(data => {
+            return {
+                name : utils.getFileName(urls[id]),
+                data : data
+            }
+        });
+        promise = promise.then(fileOptions => {
+            return zip.file(fileOptions.name, fileOptions.data, { base64 : true });
+        });
+        promise = promise.then(zip_obj => {
+            if (id < urls.length - 1) {
+                options.id = id + 1;
+                return f(options);
+            } else {
+                return zip_obj;
+            }
+        });
+
+        return promise;
     }
+
+    getImagePromise({
+        urls : imgUrls,
+        zip : zip
+    }).then(zipResult => {
+        return zipResult.generateAsync({type : 'base64'});
+    }).then(content => {
+        request.body.file = content;
+        next();
+    }).catch(err => {
+        console.log(err);
+        response.status(500).send();
+    })
 }) 
 
 router.post('/api/download', (request, response) => {
-    response.send(request.body);
+    const pack = request.body.file;
+    response.set('Content-Type', 'application/zip').send(pack);
 })
 
 module.exports = router;
