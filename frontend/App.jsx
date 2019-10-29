@@ -58,9 +58,17 @@ class App extends React.Component {
                 this.setState({
                     loading : false
                 });
-                console.log(res);
+
                 const downloadUri = `data:application/zip;charset=utf-8;base64,${res.data}`;
-                window.location.href = downloadUri;
+                const link = document.createElement('a');
+                link.href = downloadUri;
+                link.download = 'deviations.zip';
+                document.body.appendChild(link);
+                link.click();
+
+                window.onfocus = function() {
+                    document.body.removeChild(link);
+                }
             })
             .catch(err => {
                 console.log(err);
