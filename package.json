@@ -31,6 +31,7 @@
     "express": "^4.17.1",
     "jszip": "^3.2.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "styled-jsx": "^3.2.3"
   }
 }

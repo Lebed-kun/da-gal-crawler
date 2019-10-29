@@ -90,27 +90,82 @@ class App extends React.Component {
                 <div>
                     <h1 className="error">Error: "{this.state.error}" :( </h1>
 
-                    <button onClick={this.reset}>
+                    <button onClick={this.reset} className="rounded btn-single">
                         Try again
                     </button>
                 </div>
             )
         } else {
             content = (
-                <form onSubmit={this.handleSubmit}>
-                    <h1>Put url of DA gallery here to get images</h1>
-                    
-                    <input key="link" name="link" onChange={this.handleChange} placeholder="Link to the gallery/collection" />
-                    <input key="limit" name="limit" value={this.state.limit} onChange={this.handleChange} placeholder="Count"/>
-                    
-                    <button type="submit">
-                        Go!
-                    </button>
-                </form>
+                <div>
+                    <h1>Get DA gallery/collection with just 1 click!</h1>
+                
+                    <form onSubmit={this.handleSubmit}>
+                        <input key="link" name="link" onChange={this.handleChange} placeholder="Link to the gallery/collection"/>
+                        <input key="limit" name="limit" value={this.state.limit} onChange={this.handleChange} placeholder="Max count" className="number" maxLength="4"/>
+
+                        <button type="submit" className="rounded">
+                            Go!
+                        </button>
+                    </form>
+                </div>
             )
         }
 
-        return content;
+        return (
+            <>
+                {content}
+
+                <style jsx>
+                    {`
+                        h1 {
+                            text-align : center;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        }
+
+                        form {
+                            display : flex;
+                            justify-content : center;
+                        }
+
+                        input {
+                            font-size : 1rem;
+                            margin : 0 4px;
+                        }
+
+                        button {
+                            background : #337ab7;
+                            color : white;
+                            border : none;
+                            font-size : 1rem;
+                        }
+
+                        .btn-single {
+                            align-self : center;
+                        }
+
+                        .rounded {
+                            border-radius: 5px;
+                            -o-border-radius: 5px;
+                            -moz-border-radius: 5px;
+                            -webkit-border-radius: 5px;
+                        }
+
+                        @media only screen and (min-width: 514px) {
+                            .number {
+                                width : 2.67rem;
+                            }
+                        }
+
+                        @media only screen and (max-width: 514px) {
+                            form {
+                                flex-direction : column;
+                            }
+                        }
+                    `}
+                </style>
+            </>
+        )
     }
 }
 
