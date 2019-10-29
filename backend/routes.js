@@ -1,17 +1,24 @@
 const express = require('express');
 const axios = require('axios');
 const JSZip = require('jszip');
+const path = require('path');
 
 const config = require('./config.js');
 const utils = require('./utils.js');
 
 const router = express.Router();
 
-if (process.env.NODE_ENV == 'production') {
-    router.get('/', (request, response) => {
-        response.sendFile('./static/index.html');
-    })
-} 
+const env = process.env.NODE_ENV || 'development';
+
+router.use(express.static('static'));
+
+router.get('/', (request, response) => {
+    if (env == 'production') {
+        response.sendFile(path.resolve('static/index.html'));
+    } else {
+        response.send('Available endpoint: /api/download')
+    }
+})
 
 // Done!
 // Prepare data for images crawling
