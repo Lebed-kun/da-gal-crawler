@@ -60,7 +60,8 @@ class App extends React.Component {
                 });
 
                 const downloadUri = `data:application/zip;charset=utf-8;base64,${res.data}`;
-                const link = document.createElement('a');
+                window.location.href = downloadUri;
+                /* const link = document.createElement('a');
                 link.href = downloadUri;
                 link.download = 'deviations.zip';
                 document.body.appendChild(link);
@@ -68,7 +69,7 @@ class App extends React.Component {
 
                 window.onfocus = function() {
                     document.body.removeChild(link);
-                }
+                } */
             })
             .catch(err => {
                 console.log(err);

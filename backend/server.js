@@ -5,7 +5,7 @@ const app = express();
 
 const router = require('./routes.js');
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 if (process.env.NODE_ENV !== 'production') {
     app.use(function(req, res, next) {
